@@ -28,15 +28,16 @@ contract CalledContract {
 
 以太坊虚拟机是一种堆栈结构的虚拟机，虚拟机常见的结构设计除了堆栈方式之外还有一种是寄存器的方式（常用于硬件）。本文接下来所指的虚拟机全部都是堆栈方式的。EVM大致结构如下图所示。
 
-![[Pasted image 20240226154231.png]]
+<img width="1028" alt="Pasted image 20240226154231" src="https://github.com/Einstellung/search/assets/26652483/ca35c244-c6db-467b-9c60-e0eece3373f2">
 
 在实际编程中，编译器会将我们编写好的代码按照约定规则（opcode和对应的二进制代码提前约定好）将Solidity代码转换成字节码。然后EVM会解读字节码（对应关系提前约定）并将其翻译成实际的计算机可执行程序然后开始具体执行代码。下图是opcode和对应的类型别名约定关系示例：
 
-![[Pasted image 20240226161014.png]]
+<img width="477" alt="Pasted image 20240226161014" src="https://github.com/Einstellung/search/assets/26652483/e953c362-ccd9-492d-abb5-4a83abbae460">
 
 实际的编译好的二进制代码不只是包含字节码，还包含数据类型参数类型等等很多其他信息，要复杂的多。下图是webassembly编译之后的字节码和原始代码对比，可以看到还包含很多其他信息，不过不是本文的重点，就此略过。
 
-![[Pasted image 20240226161632.png]]
+<img width="1085" alt="Pasted image 20240226161632" src="https://github.com/Einstellung/search/assets/26652483/424dc537-354c-474a-afb6-90c534087d7e">
+
 
 当EVM解读完字节码之后就可以开始执行程序了。EVM会将解码之后的指令逐个执行。一个指令由opcode和operand组成。有的opcode没有operand（如之前图中`STOP`，或者如`ADD`需要两个operand）。一段指令可能会是这个样子：
 
@@ -50,7 +51,7 @@ ADD
 
 可以看到上述指令涉及到不少数据处理操作比如`PUSH`和`SWAP1`， 这些数据处理都需要在堆栈中完成。而具体EVM要执行哪个指令则由point counter来控制（不只是顺序执行，也可以由`JUMP`之类的指令更改位置）。Memory中会存放全局变量或者函数的局部变量。Storage是一个比较特别的数据结构，它比较类似于一种key-value数据库，该部分会在后文详细分析。
 
-![[Pasted image 20240226163401.png]]
+<img width="1070" alt="Pasted image 20240226163401" src="https://github.com/Einstellung/search/assets/26652483/ffb851b1-19c6-4552-ac39-ffa9d4e44cd6">
 
 ## Memory
 
@@ -141,7 +142,7 @@ contract HelloWorld {
 
 Storage数据结构大致类似一个非常大的寻址范围key-value数据库。其中key的可寻址范围为$0$到$2^{256}-1$，是一个非常大的范围，这种设计支撑起mapping映射结构。
 
-![[Pasted image 20240226185638.png]]
+<img width="844" alt="Pasted image 20240226185638" src="https://github.com/Einstellung/search/assets/26652483/54775ba3-cfdf-44c6-85da-5c0980504709">
 
 当然除了mapping，还有很多其他类型的数据存储用到了Storage。比如这样的数据结构：
 
